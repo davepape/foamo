@@ -1,0 +1,30 @@
+{
+  "name": "foamo",
+  "version": "1.0.0",
+  "description": "FOAMO",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davepape/foamo.git"
+  },
+  "author": "Dave Pape",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/davepape/foamo/issues"
+  },
+  "homepage": "https://github.com/davepape/foamo#readme",
+  "dependencies": {
+    "connect-mongo": "^5.1.0",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "express-validator": "^7.2.1",
+    "md5": "^2.3.0",
+    "mongodb": "^6.12.0",
+    "nodemailer": "^6.10.0",
+    "ws": "^8.18.0"
+  }
+}
