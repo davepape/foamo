@@ -241,6 +241,9 @@ async function socketReceiveData(data,ws)
     let collection = db.collection("users");
     let query = { _id: new ObjectId(decoder.decode(data)) };
     collection.updateOne(query, {$set: { 'watching': 15} }, {});
+    let result = await collection.findOne(query);
+    let message = { money: result.money, foam: result.foam, broken: result.broken };
+    ws.send(JSON.stringify(message), { binary: false });
     }
 
 
