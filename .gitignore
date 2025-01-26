@@ -128,3 +128,11 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+tmp
+package-lock.json
+.htaccess
+*.swp
+favicon.*
+certificate.txt
+rsakey.txt
