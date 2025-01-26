@@ -5,7 +5,7 @@ const nodemailer = require('nodemailer');
 
 const { MongoClient, ServerApiVersion, ObjectID } = require('mongodb');
 const uri = process.env.ATLAS_URI;
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+const client = new MongoClient(uri, { serverApi: ServerApiVersion.v1 });
 
 const STARTING_POINTS = 10;
 let logToConsole = false;
