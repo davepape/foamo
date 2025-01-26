@@ -25,7 +25,7 @@
   <div class="row">
     <div class="col d-grid gap-1">
       <div class="md-8 p-3">
-      You have
+      You have<br><br>
       <p>
       <span id="moneySpan"><%= user.money %></span> Qdollars
       <p>
@@ -34,16 +34,17 @@
       <div class="md-8 p-3 primary">
       Current price: <span id="priceSpan"><%= foamPrice %></span>
       </div>
-      <div class="md-8 text-center p-3">
+      <div id="harvestbutton" class="md-8 text-center p-3">
         <a href="/harvest" class="btn btn-primary">HARVEST</a>
       </div>
-      <div class="md-8 text-center p-3">
+      <div id="repairbutton" class="md-8 text-center p-3">
         <a href="/repair" class="btn btn-primary">REPAIR</a>
       </div>
     </div>
-    <div class="col d-grid">
+    <div id="deviceimage" class="col d-grid">
     <img src="/foamo_device.png" class="img-fluid">
     </div>
+    <div class="col d-grid"></div>
   </div>
 
 <% if (locals.user) { %>
@@ -53,6 +54,9 @@ let myMoney = document.getElementById('moneySpan');
 let myFoam = document.getElementById('foamSpan');
 let price = document.getElementById('priceSpan');
 let haveNotifiedBroken = false;
+let repairbutton = document.getElementById('repairbutton');
+let harvestbutton = document.getElementById('harvestbutton');
+let deviceimage = document.getElementById('deviceimage');
 
 function sendMyName()
     {
@@ -75,6 +79,9 @@ function receiveData(msg)
             document.querySelector('#gameUpdateMessage').innerHTML = "YOUR DEVICE HAS BROKEN!";
             myModal.show();
             haveNotifiedBroken = true;
+            repairbutton.style.display = 'block';
+            harvestbutton.style.display = 'none';
+            deviceimage.classList.add('bg-danger');
             }
         }
     else
@@ -87,6 +94,7 @@ ws = new WebSocket('wss://foamo.davepape.org:17085');
 ws.addEventListener('open',sendMyName);
 ws.addEventListener('message',receiveData);
 setInterval(sendMyName, 1000);
+repairbutton.style.display = 'none';
 </script>
 <% } %>
 

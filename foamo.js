@@ -55,7 +55,11 @@ async function updateFoam()
                 }
             u.stability = u.stability + 1;
             if (Math.random() * 1000 < u.stability)
+                {
                 u.broken = true;
+                u.foam = 0;
+                u.deltaFoam = 1;
+                }
             collection.updateOne({_id: u._id}, {$set: u}, {});
             }
         });
@@ -110,9 +114,9 @@ async function scoreboard(req,res)
     let result = await collection.find(query).toArray();
     scores = [];
     result.forEach(function (u) {
-        let css = 'table-primary';
+        let css = 'table-default';
         if (u.broken)
-            css = 'table-error';
+            css = 'table-danger';
         scores.push({name: u.screenname, money: Math.round(u.money), css: css});
         });
     let user = await playerByID(req.session.foamo_user_id);
