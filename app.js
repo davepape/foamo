@@ -7,13 +7,12 @@ app.set('view engine', 'ejs');
 /* Enable session data for all connections to this site */
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
-const sess_uri = process.env.ATLAS_SESSION_URI;
+const sess_uri = process.env.ATLAS_FOAMO_SESSION_URI;
 
 app.use(session({ secret: process.env.SESSION_SECRET,
-                  store: MongoStore.create({ mongoUrl: sess_uri }),
+                  store: MongoStore.create({ mongoUrl: sess_uri, dbName: 'foamo', stringify: false }),
                   resave: false,
-                  saveUninitialized: false,
-                  cookie: { maxAge: 365*24*60*60*1000 }}))
+                  saveUninitialized: false}));
 
 
 /* Assuming all our pages are dynamically generated, this tells browsers not to cache anything.  */
@@ -29,6 +28,7 @@ app.use(bodyParser.urlencoded({extended:false}));
 /* This allows static files in the "public" folder to be served when running this app via the command-line, rather than via Passenger */
 const path = require('path');
 app.use(express.static(path.join(__dirname, 'public')));
+
 
 app.use('/', require('./foamo.js'));
 

@@ -10,53 +10,27 @@
 </head>
 
 <body>
+<% if (locals.user) { %>
 <div class="container">
   <div class="row">
     <div class="col d-grid gap-1">
-<% if (locals.user) { %>
     <a href="/about" class="btn btn-primary">FOAMO</a>
-<% } else { %>
-    <a href="/" class="btn btn-primary">FOAMO</a>
-<% } %>
     </div>
     <div class="col d-grid">
-<% if (locals.user) { %>
-    <div class="text-white bg-secondary text-center rounded">
-    Score: <%= user.score %>
-    <br>
-    Actions: <%= user.actionpoints %>
-    </div>
-<% } %>
+      <div class="text-white bg-secondary text-center rounded">
+      <a href="/game" class="btn btn-secondary"><%= user.screenname %></a>
+      </div>
     </div>
     <div class="col d-grid">
-<% if (locals.user) { %>
-    <div class="text-white bg-secondary text-center rounded">
-    <%= user.screenname %>
-    </div>
-<% } %>
     </div>
   </div>
   <div class="row">
     <div class="col d-grid">
-<% if ((locals.user) && (user.hasNewResults)) { %>
-    <a href="/results" class="btn btn-danger">Results</a>
-<% } else if (locals.user) { %>
-    <a href="/results" class="btn btn-info">Results</a>
-<% } %>
     </div>
     <div class="col d-grid">
-<% if (locals.user) { %>
-    <a href="/scoreboard" class="btn btn-info">Scores</a>
-<% } else { %>
-    <a href="/about" class="btn btn-primary">About</a>
-<% } %>
     </div>
     <div class="col d-grid">
-<% if (locals.user) { %>
-    <a href="/settings" class="btn btn-info"><span class="material-symbols-outlined">settings</span></a>
-<% } %>
     </div>
-<% if (locals.user) { %>
   <div class="row justify-content-center py-3">
     <div class="col d-grid gap-1">
       <a href="/attack" class="btn btn-primary">Attack</a>
@@ -65,8 +39,7 @@
       <a href="/defend" class="btn btn-primary">Defend</a>
     </div>
   </div>
-<% } %>
-<% if ((locals.user) && (user.screenname == "Dave Pape")) { %>
+<% if (user.screenname == "Dave Pape") { %>
   <div class="row p-3">
     <div class="col d-grid gap-1">
       <a href="/log" class="btn btn-primary">Log</a>
@@ -79,7 +52,31 @@
     </div>
   </div>
 <% } %>
+</div>
+
+<% } else { %>
+
+<div class="container">
+  <div class="row">
+    <div class="col d-grid gap-1">
+    <a href="/" class="btn btn-primary">FOAMO</a>
+    </div>
+    <div class="col d-grid">
+    <a href="/about" class="btn btn-primary">about</a>
+    </div>
+    <div class="col d-grid">
+    </div>
   </div>
+  <div class="row">
+    <div class="col d-grid">
+    </div>
+    <div class="col d-grid">
+    </div>
+    <div class="col d-grid">
+    </div>
+  </div>
+</div>
+<% } %>
 
 <div id="gameUpdateModal" class="modal" tabindex="-1"> 
             <div class="modal-dialog"> 
