@@ -64,10 +64,9 @@ async function game(req, res) {
     let db = await getDb();
     let collection = db.collection("users");
     let query = { _id: new ObjectId(req.session.foamo_user_id) };
-    collection.findOne(query, async function (err, result) {
-        if (err) { logMessage(err,req); return res.sendStatus(500); }
-        res.render('game', { user: result, username: result.screenname });
-        });
+    let result = collection.findOne(query);
+//        if (err) { logMessage(err,req); return res.sendStatus(500); }
+    res.render('game', { user: result, username: result.screenname });
     }
 
 
@@ -126,10 +125,8 @@ async function newAccount(req, res)
         let obj = { screenname: req.body.yourname, email: "", actionpoints: STARTING_POINTS, score: 0, hasNewResults: false };
         let result = await collection.insertOne(obj);
 //            if (err) { logMessage(err,req); return res.sendStatus(500); }
-console.log(result);
         req.session.foamo_user_id = result.insertedId;
         req.session.username = obj.screenname;
-console.log("redirecting");
         res.redirect(`/game`);
         logMessage(`new account ${req.body.yourname}`, req);
         }
