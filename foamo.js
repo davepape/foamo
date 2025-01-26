@@ -118,7 +118,7 @@ async function scoreboard(req,res)
     let db = await getDb();
     let collection = db.collection("users");
     let query = { };
-    let result = await collection.find(query).toArray();
+    let result = await collection.find(query).sort({money: -1}).toArray();
     scores = [];
     result.forEach(function (u) {
         let css = 'table-default';
