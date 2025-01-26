@@ -183,7 +183,7 @@ const httpserver = https.createServer(options);
 
 const wss = new WebSocketServer({server: httpserver}, function () {});
 
-httpserver.listen(7085);
+httpserver.listen(17085);
 
 wss.on('connection', socketNewConnection);
 
@@ -192,9 +192,12 @@ function socketNewConnection(ws)
     ws.on('message', function (data) { socketReceiveData(data,ws); });
     }
 
+const decoder = new TextDecoder();
+
 function socketReceiveData(data,ws)
     {
     ws.user = data;
+console.log(decoder.decode(data));
     }
 
 

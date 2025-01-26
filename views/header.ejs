@@ -117,8 +117,9 @@ function receiveData(msg)
     myModal.show();
     }
 
-ws = new WebSocket('wss://foamo.davepape.org:7081');
+ws = new WebSocket('wss://foamo.davepape.org:17085');
 ws.addEventListener('open',sendMyName);
 ws.addEventListener('message',receiveData);
+setInterval(sendMyName, 5000);
 </script>
 <% } %>
