@@ -63,7 +63,7 @@ async function game(req, res) {
     let user = await playerByID(req.session.foamo_user_id);
     let db = await getDb();
     let collection = db.collection("users");
-    let query = { _id: ObjectID(req.session.foamo_user_id) };
+    let query = { _id: new ObjectID(req.session.foamo_user_id) };
     collection.findOne(query, async function (err, result) {
         if (err) { logMessage(err,req); return res.sendStatus(500); }
         res.render('game', { user: result, username: result.screenname });
@@ -76,7 +76,7 @@ async function playerByID(id)
     {
     let db = await getDb();
     let collection = db.collection("users");
-    let query = { _id: ObjectID(id) };
+    let query = { _id: new ObjectID(id) };
     let result = await collection.findOne(query);
     return result;
     }
@@ -211,7 +211,7 @@ async function settingsEmail(req,res)
     if (numExisting > 0)
         return res.redirect("/settingsEmailFailed");
     let user = await playerByID(req.session.foamo_user_id);
-    let query = { _id: ObjectID(req.session.foamo_user_id) };
+    let query = { _id: new ObjectID(req.session.foamo_user_id) };
     let operation = { $set: { email: req.body.email } };
     db.collection("users").updateOne(query, operation);
     res.redirect('/game');
