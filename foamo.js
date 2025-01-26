@@ -54,11 +54,19 @@ async function updateFoam()
                 u.deltaFoam = u.deltaFoam + 1;
                 }
             u.stability = u.stability + 1;
-            if (Math.random() * 1000 < u.stability)
+            if (priceTick > u.nextCheck)
                 {
-                u.broken = true;
-                u.foam = 0;
-                u.deltaFoam = 1;
+                if (Math.random() * 1000 < u.stability)
+                    {
+                    console.log(u.screenname + " broke");
+                    u.broken = true;
+                    u.foam = 0;
+                    u.deltaFoam = 1;
+                    }
+                else
+                    {
+                    u.nextCheck = priceTick + 10;
+                    }
                 }
             collection.updateOne({_id: u._id}, {$set: u}, {});
             }
@@ -77,7 +85,6 @@ async function harvest(req, res)
         user.money += user.foam * foamPrice;
         user.foam = 0;
         user.deltaFoam = 1;
-        user.stability = 0;
         user.watching = 15;
         collection.updateOne({_id: user._id}, {$set: user}, {});
         return res.redirect('/game');
@@ -179,7 +186,7 @@ function printableTime(t) {
 
 function newPlayerData(name)
     {
-    return { screenname: name, money: 0, foam: 0, deltaFoam: 1, stability: 0, broken: false, watching: 0, hasNewResults: false };
+    return { screenname: name, money: 0, foam: 0, deltaFoam: 1, stability: 0, broken: false, watching: 0, hasNewResults: false, nextCheck: 0 };
     }
 
 
@@ -292,7 +299,7 @@ async function socketReceiveData(data,ws)
     let query = { _id: new ObjectId(decoder.decode(data)) };
     collection.updateOne(query, {$set: { 'watching': 15} }, {});
     let result = await collection.findOne(query);
-    let message = { money: result.money, foam: result.foam, broken: result.broken, price: foamPrice };
+    let message = { money: result.money.toFixed(2), foam: result.foam, broken: result.broken, price: foamPrice.toFixed(2) };
     ws.send(JSON.stringify(message), { binary: false });
     }
 
