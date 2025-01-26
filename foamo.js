@@ -124,12 +124,13 @@ async function newAccount(req, res)
     let numExisting = await collection.count(query);
     if (numExisting == 0) {
         let obj = { screenname: req.body.yourname, email: "", actionpoints: STARTING_POINTS, score: 0, hasNewResults: false };
-        collection.insertOne(obj, function (err,result) {
-            if (err) { logMessage(err,req); return res.sendStatus(500); }
-            req.session.foamo_user_id = result.insertedId;
-            req.session.username = obj.screenname;
-            res.redirect(`/game`);
-            });
+        let result = await collection.insertOne(obj);
+//            if (err) { logMessage(err,req); return res.sendStatus(500); }
+console.log(result);
+        req.session.foamo_user_id = result.insertedId;
+        req.session.username = obj.screenname;
+console.log("redirecting");
+        res.redirect(`/game`);
         logMessage(`new account ${req.body.yourname}`, req);
         }
     else {
