@@ -31,11 +31,14 @@
       <p>
       <span id="foamSpan"><%= user.foam %></span> foam
       </div>
-      <div class="md-8 text-center p-3 primary">
-      Current price: <%= foamPrice %>
+      <div class="md-8 p-3 primary">
+      Current price: <span id="priceSpan"><%= foamPrice %></span>
       </div>
       <div class="md-8 text-center p-3">
         <a href="/harvest" class="btn btn-primary">HARVEST</a>
+      </div>
+      <div class="md-8 text-center p-3">
+        <a href="/repair" class="btn btn-primary">REPAIR</a>
       </div>
     </div>
     <div class="col d-grid">
@@ -48,6 +51,8 @@
 let myModal = new bootstrap.Modal(document.getElementById('gameUpdateModal'));
 let myMoney = document.getElementById('moneySpan');
 let myFoam = document.getElementById('foamSpan');
+let price = document.getElementById('priceSpan');
+let haveNotifiedBroken = false;
 
 function sendMyName()
     {
@@ -62,13 +67,20 @@ function receiveData(msg)
     let data = JSON.parse(msg.data);
     myMoney.innerHTML = data.money;
     myFoam.innerHTML = data.foam;
-/*
+    price.innerHTML = data.price;
     if (data.broken)
         {
-    document.querySelector('#gameUpdateMessage').innerHTML = msg.data;
-    myModal.show();
+        if (!haveNotifiedBroken)
+            {
+            document.querySelector('#gameUpdateMessage').innerHTML = "YOUR DEVICE HAS BROKEN!";
+            myModal.show();
+            haveNotifiedBroken = true;
+            }
         }
-*/
+    else
+        {
+        haveNotifiedBroken = false;
+        }
     }
 
 ws = new WebSocket('wss://foamo.davepape.org:17085');

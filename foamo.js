@@ -54,16 +54,53 @@ async function updateFoam()
                 u.deltaFoam = u.deltaFoam + 1;
                 }
             u.stability = u.stability + 1;
-/*
             if (Math.random() * 1000 < u.stability)
                 u.broken = true;
-*/
             collection.updateOne({_id: u._id}, {$set: u}, {});
             }
         });
     }
 setInterval(updateFoam, 1000);
 
+async function harvest(req, res)
+    {
+    if (req.session.foamo_user_id)
+        {
+        let db = await getDb();
+        let collection = db.collection("users");
+        let query = { _id: new ObjectId(req.session.foamo_user_id) };
+        let user = await collection.findOne(query);
+        user.money += user.foam * foamPrice;
+        user.foam = 0;
+        user.deltaFoam = 1;
+        user.stability = 0;
+        user.watching = 15;
+        collection.updateOne({_id: user._id}, {$set: user}, {});
+        return res.redirect('/game');
+        }
+    return res.redirect('/welcome');
+    }
+
+
+async function repair(req, res)
+    {
+    if (req.session.foamo_user_id)
+        {
+        let db = await getDb();
+        let collection = db.collection("users");
+        let query = { _id: new ObjectId(req.session.foamo_user_id) };
+        let user = await collection.findOne(query);
+        user.broken = false;
+        user.money -= 1000000;
+        user.foam = 0;
+        user.deltaFoam = 1;
+        user.stability = 0;
+        user.watching = 15;
+        collection.updateOne({_id: user._id}, {$set: user}, {});
+        return res.redirect('/game');
+        }
+    return res.redirect('/welcome');
+    }
 
 async function rootPage(req, res) {
     if (req.session.foamo_user_id) { return res.redirect('/game'); }
@@ -233,7 +270,7 @@ async function socketReceiveData(data,ws)
     let query = { _id: new ObjectId(decoder.decode(data)) };
     collection.updateOne(query, {$set: { 'watching': 15} }, {});
     let result = await collection.findOne(query);
-    let message = { money: result.money, foam: result.foam, broken: result.broken };
+    let message = { money: result.money, foam: result.foam, broken: result.broken, price: foamPrice };
     ws.send(JSON.stringify(message), { binary: false });
     }
 
@@ -285,6 +322,8 @@ router.get('/about', aboutPage);
 router.post('/newaccount', newAccount);
 router.get('/newaccounterror', newAccountError);
 router.get('/randomname', randomName);
+router.get('/harvest', harvest);
+router.get('/repair', repair);
 router.get('/log/:password', log);
 
 module.exports = router;
