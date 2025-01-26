@@ -23,6 +23,13 @@ async function getDb() {
     }
 
 
+let foamTest = 1;
+function updateFoam()
+    {
+    foamTest = foamTest + 1;
+    }
+setInterval(updateFoam, 1000);
+
 
 async function rootPage(req, res) {
     if (req.session.foamo_user_id) { return res.redirect('/game'); }
@@ -56,7 +63,7 @@ async function game(req, res) {
     let query = { _id: new ObjectId(req.session.foamo_user_id) };
     let result = await collection.findOne(query);
 //        if (err) { logMessage(err,req); return res.sendStatus(500); }
-    res.render('game', { user: result });
+    res.render('game', { user: result, foam: foamTest });
     }
 
 
@@ -160,9 +167,6 @@ function logout(req, res)
 
 
 /* Create the WebSocket server, which will use port 7085 */
-/* Be aware that if you have this app running via Passenger, and then also
-  try to run it manually at the same time (for debugging), it may die
-  because of two separate processes trying to both use the same port.  */
 const { WebSocket, WebSocketServer } = require('ws');
 
 /* const httpserver = require('http').createServer(); */

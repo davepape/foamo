@@ -17,7 +17,8 @@ app.use(session({ secret: process.env.SESSION_SECRET,
 
 /* Assuming all our pages are dynamically generated, this tells browsers not to cache anything.  */
 app.use(function (req,res,next) {
-    res.set('Cache-Control','no-store');
+    if (req.originalUrl != '/foamo_logo.png')
+        res.set('Cache-Control','no-store');
     next();
     });
 
@@ -32,7 +33,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', require('./foamo.js'));
 
-let port = 18702;
+let port = 18705;
 if (process.env.NODE_PORT)
     port = parseInt(process.env.NODE_PORT);
 
