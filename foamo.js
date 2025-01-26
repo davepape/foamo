@@ -195,15 +195,6 @@ function newAccountError(req, res)
     }
 
 
-function logout(req, res)
-    {
-    logMessage('logout', req);
-    req.session.destroy(function (err) {
-        if (err) { logMessage(err,req); return res.sendStatus(500); }
-        res.redirect(`.`);
-        });
-    }
-
 
 
 /* Create the WebSocket server, which will use port 7085 */
