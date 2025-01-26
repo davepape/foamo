@@ -25,19 +25,6 @@
     </div>
   </div>
   <div class="row">
-    <div class="col d-grid">
-    </div>
-    <div class="col d-grid">
-    </div>
-    <div class="col d-grid">
-    </div>
-  <div class="row justify-content-center py-3">
-    <div class="col d-grid gap-1">
-      <a href="/attack" class="btn btn-primary">Attack</a>
-    </div>
-    <div class="col d-grid gap-1">
-      <a href="/defend" class="btn btn-primary">Defend</a>
-    </div>
   </div>
 <% if (user.screenname == "Dave Pape") { %>
   <div class="row p-3">
@@ -99,27 +86,4 @@
                 </div> 
             </div> 
 </div>
-<% if (locals.user) { %>
-<script>
-let myModal = new bootstrap.Modal(document.getElementById('gameUpdateModal'));
-
-function sendMyName()
-    {
-    if (ws.readyState == WebSocket.OPEN)
-        {
-        ws.send('<%= user._id %>');
-        }
-    }
-
-function receiveData(msg) 
-    {
-    document.querySelector('#gameUpdateMessage').innerHTML = msg.data;
-    myModal.show();
-    }
-
-ws = new WebSocket('wss://foamo.davepape.org:17085');
-ws.addEventListener('open',sendMyName);
-ws.addEventListener('message',receiveData);
-setInterval(sendMyName, 5000);
-</script>
 <% } %>

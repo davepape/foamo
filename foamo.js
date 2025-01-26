@@ -1,7 +1,6 @@
 const path = require('path');
 const md5 = require('md5');
 const { body, validationResult } = require('express-validator');
-const nodemailer = require('nodemailer');
 
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = process.env.ATLAS_URI;
@@ -23,10 +22,45 @@ async function getDb() {
     }
 
 
-let foamTest = 1;
-function updateFoam()
+let priceTick=1;
+let foamPrice = 100.0;
+
+async function updateFoam()
     {
-    foamTest = foamTest + 1;
+    priceTick += 1;
+    foamPrice += Math.sin(priceTick/100.0) * (Math.random()+1.0);
+    if (foamPrice < 0.1)
+        foamPrice = 0.1;
+    let db = await getDb();
+    let collection = db.collection("users");
+    let query = { };
+    let result = await collection.find(query).toArray();
+    result.forEach(function (u) {
+        if (u.broken)
+            {
+            u.foam = 0;
+            u.deltaFoam = 1;
+            }
+        else
+            {
+            if (u.watching > 0)
+                {
+                u.watching = u.watching - 1;
+                u.foam += u.deltaFoam / 100.0;
+                }
+            else
+                {
+                u.foam = u.foam + u.deltaFoam;
+                u.deltaFoam = u.deltaFoam + 1;
+                }
+            u.stability = u.stability + 1;
+/*
+            if (Math.random() * 1000 < u.stability)
+                u.broken = true;
+*/
+            collection.updateOne({_id: u._id}, {$set: u}, {});
+            }
+        });
     }
 setInterval(updateFoam, 1000);
 
@@ -63,7 +97,7 @@ async function game(req, res) {
     let query = { _id: new ObjectId(req.session.foamo_user_id) };
     let result = await collection.findOne(query);
 //        if (err) { logMessage(err,req); return res.sendStatus(500); }
-    res.render('game', { user: result, foam: foamTest });
+    res.render('game', { user: result, foamPrice: foamPrice });
     }
 
 
@@ -84,6 +118,12 @@ function printableTime(t) {
     }
 
 
+function newPlayerData(name)
+    {
+    return { screenname: name, money: 0, foam: 0, deltaFoam: 1, stability: 0, broken: false, watching: 0, hasNewResults: false };
+    }
+
+
 async function newAccount(req, res)
     {
     const errors = validationResult(req);
@@ -94,7 +134,7 @@ async function newAccount(req, res)
     logMessage(`trying to create account ${req.body.yourname}`, req);
     let numExisting = await collection.count(query);
     if (numExisting == 0) {
-        let obj = { screenname: req.body.yourname, email: "", actionpoints: STARTING_POINTS, score: 0, hasNewResults: false };
+        let obj = newPlayerData(req.body.yourname);
         let result = await collection.insertOne(obj);
 //            if (err) { logMessage(err,req); return res.sendStatus(500); }
         req.session.foamo_user_id = result.insertedId;
@@ -115,7 +155,7 @@ async function randomName(req, res)
     let db = await getDb();
     let collection = db.collection("users");
     logMessage(`trying to create random-named account ${name}`, req);
-    let obj = { screenname: name, email: "", actionpoints: STARTING_POINTS, score: 0, hasNewResults: false };
+    let obj = newPlayerData(name);
     let result = await collection.insertOne(obj);
 //        if (err) { logMessage(err,req); return res.sendStatus(500); }
     req.session.foamo_user_id = result.insertedId;
@@ -194,10 +234,13 @@ function socketNewConnection(ws)
 
 const decoder = new TextDecoder();
 
-function socketReceiveData(data,ws)
+async function socketReceiveData(data,ws)
     {
     ws.user = data;
-console.log(decoder.decode(data));
+    let db = await getDb();
+    let collection = db.collection("users");
+    let query = { _id: new ObjectId(decoder.decode(data)) };
+    collection.updateOne(query, {$set: { 'watching': 15} }, {});
     }
 
 

@@ -1,10 +1,49 @@
 <%- include('header'); %>
   <div class="row">
-    <div class="md-8 text-center p-3">
-    Choose your action above
+    <div class="col d-grid gap-1">
+      <div class="md-8 p-3">
+      You have
+      <p>
+      <span id="moneySpan"><%= user.money %></span> Qdollars
+      <p>
+      <span id="foamSpan"><%= user.foam %></span> foam
+      </div>
+      <div class="md-8 text-center p-3 primary">
+      Current price: <%= foamPrice %>
+      </div>
+      <div class="md-8 text-center p-3">
+        <a href="/harvest" class="btn btn-primary">HARVEST</a>
+      </div>
     </div>
-    <div class="md-8 text-center p-3">
-    <%= foam %>
+    <div class="col d-grid">
+    <img src="/foamo_device.png" class="img-fluid">
     </div>
   </div>
+
+<% if (locals.user) { %>
+<script>
+let myModal = new bootstrap.Modal(document.getElementById('gameUpdateModal'));
+let myMoney = document.getElementById('moneySpan');
+let myFoam = document.getElementById('foamSpan');
+
+function sendMyName()
+    {
+    if (ws.readyState == WebSocket.OPEN)
+        {
+        ws.send('<%= user._id %>');
+        }
+    }
+
+function receiveData(msg)
+    {
+    document.querySelector('#gameUpdateMessage').innerHTML = msg.data;
+    myModal.show();
+    }
+
+ws = new WebSocket('wss://foamo.davepape.org:17085');
+ws.addEventListener('open',sendMyName);
+ws.addEventListener('message',receiveData);
+setInterval(sendMyName, 5000);
+</script>
+
 <%- include('footer'); %>

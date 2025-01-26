@@ -17,7 +17,7 @@ app.use(session({ secret: process.env.SESSION_SECRET,
 
 /* Assuming all our pages are dynamically generated, this tells browsers not to cache anything.  */
 app.use(function (req,res,next) {
-    if (req.originalUrl != '/foamo_logo.png')
+    if (req.originalUrl != '/foamo_device.png')
         res.set('Cache-Control','no-store');
     next();
     });
