@@ -102,6 +102,24 @@ async function repair(req, res)
     return res.redirect('/welcome');
     }
 
+async function scoreboard(req,res)
+    {
+    let db = await getDb();
+    let collection = db.collection("users");
+    let query = { };
+    let result = await collection.find(query).toArray();
+    scores = [];
+    result.forEach(function (u) {
+        let css = 'table-primary';
+        if (u.broken)
+            css = 'table-error';
+        scores.push({name: u.screenname, money: Math.round(u.money), css: css});
+        });
+    let user = await playerByID(req.session.foamo_user_id);
+    res.render('scoreboard', { user: user, scores: scores });
+    }
+setInterval(updateFoam, 1000);
+
 async function rootPage(req, res) {
     if (req.session.foamo_user_id) { return res.redirect('/game'); }
     return res.redirect('/welcome');
@@ -324,6 +342,7 @@ router.get('/newaccounterror', newAccountError);
 router.get('/randomname', randomName);
 router.get('/harvest', harvest);
 router.get('/repair', repair);
+router.get('/scoreboard', scoreboard);
 router.get('/log/:password', log);
 
 module.exports = router;

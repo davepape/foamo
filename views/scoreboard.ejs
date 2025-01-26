@@ -1,0 +1,16 @@
+<%- include('header'); %>
+  <div class="row">
+    <div class="md-8 text-center p-3">
+    SCORES
+<table class="table">
+<% scores.forEach(function(p) {
+%>
+    <tr class="<%= p.css %>">
+    <td><%= p.name %></td>
+    <td><%= p.money %></td>
+    </tr>
+<% }) %>
+</table>
+    </div>
+  </div>
+<%- include('footer'); %>
